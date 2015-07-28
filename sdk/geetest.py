@@ -2,8 +2,7 @@
 from hashlib import md5
 import urllib2
 
-
-class geetest(object):
+class Geetest(object):
     """docstring for gt"""
 
     def __init__(self, id, key):
@@ -12,26 +11,22 @@ class geetest(object):
         self.PY_VERSION = "2.15.4.1.1"
 
     def geetest_register(self):
-        apireg = "http://api.geetest.com/register.php?"
-        regurl = apireg + "gt=%s"%self.CAPTCHA_ID
+        apireg = 'http://api.geetest.com/register.php?'
+        regurl = ''.join([apireg, 'gt=', self.CAPTCHA_ID])
         try:
             result = urllib2.urlopen(regurl, timeout=2).read()
         except:
-            result = ""
+            result = None
         return result
 
     def geetest_validate(self, challenge, validate, seccode):
-        apiserver = "http://api.geetest.com/validate.php"
-        if validate == self.md5value(self.PRIVATE_KEY + 'geetest' + challenge):
-            query = 'seccode=' + seccode + "&sdk=python_" + self.PY_VERSION
-            print query
+        apiserver = 'http://api.geetest.com/validate.php'
+        if validate == self.md5value(''.join([self.PRIVATE_KEY, 'geetest', challenge])):
+            query = ''.join(['seccode=', seccode, '&sdk=python_', self.PY_VERSION])
             backinfo = self.postvalues(apiserver, query)
             if backinfo == self.md5value(seccode):
-                return 1
-            else:
-                return 0
-        else:
-            return 0
+                return True
+        return False
 
     def postvalues(self, apiserver, data):
         req = urllib2.Request(apiserver)
