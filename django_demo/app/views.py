@@ -1,7 +1,7 @@
 # coding:utf-8
 from django.shortcuts import render_to_response, RequestContext
 from django.http import HttpResponse
-import sdk.geetest as geetest
+from sdk.geetest import Geetest
 
 BASE_URL = "api.geetest.com/get.php?gt="
 
@@ -13,11 +13,11 @@ product = "embed"
 # product = "popup&popupbtnid=submit-button"
 
 def home(request):
-    gt = geetest.geetest(captcha_id, private_key)
+    gt = Geetest(captcha_id, private_key)
     url = ""
     httpsurl = ""
     try:
-        challenge = gt.geetest_register()
+        challenge = gt.register()
     except:
         challenge = ""
     if len(challenge) == 32:
@@ -34,8 +34,8 @@ def login(request):
         # print challenge
         # print validate
         # print seccode
-        gt = geetest.geetest(captcha_id, private_key)
-        result = gt.geetest_validate(challenge, validate, seccode)
+        gt = Geetest(captcha_id, private_key)
+        result = gt.validate(challenge, validate, seccode)
         if result:
             return HttpResponse("success")
         else:
